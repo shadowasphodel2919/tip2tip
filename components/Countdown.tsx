@@ -24,27 +24,20 @@ function calculateTimeLeft(publishedAt: string): TimeLeft {
   const minutes = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((absDiff % (1000 * 60)) / 1000);
 
-  return {
-    hours,
-    minutes,
-    seconds,
-    totalMs: diff,
-    isOverdue: diff < 0,
-  };
+  return { hours, minutes, seconds, totalMs: diff, isOverdue: diff < 0 };
 }
 
-function getStatusLabel(totalMs: number, isOverdue: boolean): { text: string; color: string } {
+function getStatusInfo(totalMs: number, isOverdue: boolean): { text: string; icon: string; color: string } {
   if (isOverdue) {
     const overdueHours = Math.abs(totalMs) / (1000 * 60 * 60);
-    if (overdueHours > 2) return { text: "Cam, bro, you missed the upload.", color: "text-red-400" };
-    return { text: "Cam is cooking... hopefully.", color: "text-orange-400" };
+    if (overdueHours > 2) return { text: "Cam, bro, you missed the upload.", icon: "✖", color: "#ff0000" };
+    return { text: "Cam is cooking... hopefully.", icon: "⚠", color: "#ff8000" };
   }
-
   const hoursLeft = totalMs / (1000 * 60 * 60);
-  if (hoursLeft > 12) return { text: "Cam actually has time.", color: "text-emerald-400" };
-  if (hoursLeft > 6) return { text: "Tick tock, Cam.", color: "text-yellow-400" };
-  if (hoursLeft > 2) return { text: "Cam better be rendering.", color: "text-orange-400" };
-  return { text: "Cam is panicking.", color: "text-red-400" };
+  if (hoursLeft > 12) return { text: "Cam actually has time.", icon: "✔", color: "#008000" };
+  if (hoursLeft > 6)  return { text: "Tick tock, Cam.", icon: "⚠", color: "#808000" };
+  if (hoursLeft > 2)  return { text: "Cam better be rendering.", icon: "⚠", color: "#ff8000" };
+  return { text: "Cam is panicking.", icon: "✖", color: "#ff0000" };
 }
 
 function pad(n: number): string {
@@ -63,37 +56,73 @@ export default function Countdown({ publishedAt }: CountdownProps) {
     return () => clearInterval(interval);
   }, [publishedAt]);
 
-  const status = getStatusLabel(timeLeft.totalMs, timeLeft.isOverdue);
+  const status = getStatusInfo(timeLeft.totalMs, timeLeft.isOverdue);
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="text-center">
-        <p className="text-[var(--text-secondary)] text-sm uppercase tracking-widest mb-4">
+      <div className="text-center py-4">
+        <p className="text-xs mb-3" style={{ color: "var(--win-btn-shadow)" }}>
           Loading countdown...
         </p>
-        <div className="font-mono text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-[var(--text-primary)]">
-          --:--:--
-        </div>
+        <div className="win-countdown inline-block">--:--:--</div>
       </div>
     );
   }
 
   return (
-    <div className="text-center animate-fade-in">
-      <p className="text-[var(--text-secondary)] text-sm uppercase tracking-widest mb-4">
-        {timeLeft.isOverdue ? "Cam is late by" : "Tip2Tip new upload is due in"}
+    <div className="animate-fade-in text-center py-2">
+      {/* Label */}
+      <p className="text-xs font-bold uppercase mb-3" style={{ color: "var(--win-btn-dark-shadow)", letterSpacing: "0.1em" }}>
+        {timeLeft.isOverdue ? "⏰ Cam is late by" : "⏰ New upload due in"}
       </p>
 
-      <div
-        className={`font-mono text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight ${timeLeft.isOverdue ? "text-red-400" : "text-[var(--text-primary)]"
-          } countdown-pulse`}
-      >
+      {/* Digital display */}
+      <div className={`win-countdown ${timeLeft.isOverdue ? "overdue" : ""}`}>
         {pad(timeLeft.hours)}:{pad(timeLeft.minutes)}:{pad(timeLeft.seconds)}
       </div>
 
-      <div className={`mt-6 text-sm font-medium ${status.color} animate-fade-in`}>
-        {status.text}
+      {/* Progress bar */}
+      <div className="mt-4 mx-auto max-w-xs">
+        <div
+          className="h-4 w-full win-sunken overflow-hidden"
+          role="progressbar"
+          aria-label="Time remaining"
+        >
+          {(() => {
+            const totalWindow = 24 * 60 * 60 * 1000;
+            const elapsed = totalWindow - Math.max(timeLeft.totalMs, 0);
+            const pct = Math.min(100, Math.max(0, (elapsed / totalWindow) * 100));
+            return (
+              <div
+                className="h-full"
+                style={{
+                  width: `${pct}%`,
+                  background: timeLeft.isOverdue
+                    ? "#ff0000"
+                    : pct > 80
+                    ? "#ff8000"
+                    : "#0000ff",
+                  transition: "width 1s linear",
+                }}
+              />
+            );
+          })()}
+        </div>
+        <div className="flex justify-between text-xs mt-0.5" style={{ color: "var(--win-btn-shadow)" }}>
+          <span>0h</span>
+          <span>24h</span>
+        </div>
+      </div>
+
+      {/* Status message */}
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <div
+          className="win-raised px-3 py-1.5 text-xs font-bold flex items-center gap-1.5"
+          style={{ color: status.color }}
+        >
+          <span>{status.icon}</span>
+          <span>{status.text}</span>
+        </div>
       </div>
     </div>
   );

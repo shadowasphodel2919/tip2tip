@@ -44,60 +44,96 @@ export default function EmailSignup() {
   }
 
   return (
-    <div className="max-w-md mx-auto text-center">
-      <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
-        Want a reminder?
-      </h2>
-      <p className="text-sm text-[var(--text-secondary)] mb-5">
-        Drop your email and get notified when Cam finally uploads the bloody video.
-      </p>
+    <div className="text-left">
+      <div className="mb-3">
+        <p className="text-xs font-bold mb-1" style={{ color: "var(--win-black)" }}>
+          Want a reminder when Cam uploads?
+        </p>
+        <p className="text-xs" style={{ color: "var(--win-btn-shadow)" }}>
+          Enter your email address below and click &quot;Notify Me&quot; to receive a notification when Cam finally uploads the bloody video.
+        </p>
+      </div>
 
       {status === "success" ? (
-        <div className="animate-fade-in rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
-          <div className="flex items-center justify-center gap-2 text-emerald-400 text-sm font-medium">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            {message}
-          </div>
+        <div
+          className="flex items-center gap-2 p-2 animate-fade-in"
+          style={{
+            background: "#dfffdf",
+            border: "2px solid var(--win-btn-shadow)",
+            boxShadow: "inset 1px 1px 0 var(--win-btn-dark-shadow)",
+          }}
+          role="alert"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" fill="#008000"/>
+            <path d="M4 8l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          <span className="text-xs font-bold" style={{ color: "#008000" }}>{message}</span>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            type="email"
-            id="email-signup-input"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (status === "error") setStatus("idle");
-            }}
-            placeholder="you@email.com"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all duration-200"
-            disabled={status === "loading"}
-          />
-          <button
-            type="submit"
-            id="email-signup-button"
-            disabled={status === "loading"}
-            className="px-5 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
-          >
-            {status === "loading" ? (
-              <span className="flex items-center gap-1.5">
-                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Sending
-              </span>
-            ) : (
-              "Notify me"
-            )}
-          </button>
-        </form>
-      )}
+        <form onSubmit={handleSubmit} noValidate>
+          {/* Dialog-style label + input row */}
+          <div className="flex items-center gap-2 mb-3">
+            <label htmlFor="email-signup-input" className="text-xs whitespace-nowrap" style={{ minWidth: "80px" }}>
+              E-mail address:
+            </label>
+            <input
+              type="email"
+              id="email-signup-input"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (status === "error") setStatus("idle");
+              }}
+              placeholder="you@example.com"
+              className="win-input flex-1"
+              disabled={status === "loading"}
+              autoComplete="email"
+            />
+          </div>
 
-      {status === "error" && (
-        <p className="mt-2 text-xs text-red-400 animate-fade-in">{message}</p>
+          {/* Error message */}
+          {status === "error" && (
+            <div
+              className="flex items-center gap-1.5 mb-3 p-1.5 animate-fade-in"
+              style={{
+                background: "#fff0f0",
+                border: "1px solid #ff0000",
+              }}
+              role="alert"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" fill="#ff0000"/>
+                <text x="7" y="10.5" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#fff">✕</text>
+              </svg>
+              <span className="text-xs" style={{ color: "#cc0000" }}>{message}</span>
+            </div>
+          )}
+
+          {/* Button row */}
+          <div className="flex justify-end gap-2">
+            <button
+              type="submit"
+              id="email-signup-button"
+              disabled={status === "loading"}
+              className="win-btn text-xs font-bold"
+              aria-busy={status === "loading"}
+            >
+              {status === "loading" ? "Sending..." : "Notify Me"}
+            </button>
+            <button
+              type="button"
+              className="win-btn text-xs"
+              onClick={() => {
+                setEmail("");
+                setStatus("idle");
+                setMessage("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       )}
     </div>
   );
