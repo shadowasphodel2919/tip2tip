@@ -49,7 +49,7 @@ export default function EmailSignup() {
         Want a reminder?
       </h2>
       <p className="text-sm text-[var(--text-secondary)] mb-5">
-        Drop your email and get notified when Cam finally uploads the bloody video.
+        Drop your email and get notified when Cam finally uploads the today's video.
       </p>
 
       {status === "success" ? (
