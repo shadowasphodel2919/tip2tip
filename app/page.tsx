@@ -2,7 +2,7 @@ import { fetchLatestVideo } from "@/lib/rss";
 import Countdown from "@/components/Countdown";
 import VideoCard from "@/components/VideoCard";
 import EmailSignup from "@/components/EmailSignup";
-
+import MapWrapper from "@/components/MapWrapper";
 export const revalidate = 300; // Revalidate page every 5 minutes
 
 export default async function Home() {
@@ -21,19 +21,25 @@ export default async function Home() {
       </header>
 
       {/* Countdown Section */}
-      <section className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-16">
-        {video.found ? (
-          <Countdown publishedAt={video.publishedAt} />
-        ) : (
-          <div className="text-center animate-fade-in">
-            <p className="text-[var(--text-secondary)] text-sm uppercase tracking-widest mb-4">
-              Status
-            </p>
-            <p className="text-2xl md:text-3xl font-medium text-[var(--text-muted)]">
-              Cam hasn't uploaded anything recently
-            </p>
-          </div>
-        )}
+      <section className="relative flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-16">
+        {/* Background Map */}
+        <div className="absolute inset-0 flex items-center justify-center -z-10 w-full max-w-5xl mx-auto px-4">
+          <MapWrapper />
+        </div>
+        <div className="relative z-10">
+          {video.found ? (
+            <Countdown publishedAt={video.publishedAt} />
+          ) : (
+            <div className="text-center animate-fade-in">
+              <p className="text-[var(--text-secondary)] text-sm uppercase tracking-widest mb-4">
+                Status
+              </p>
+              <p className="text-2xl md:text-3xl font-medium text-[var(--text-muted)]">
+                Cam hasn't uploaded anything recently
+              </p>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* Latest Video Card */}
