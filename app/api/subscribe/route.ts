@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { neon } from '@neondatabase/serverless';
+import { sql } from "@/lib/db";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,16 +21,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    if (!process.env.DATABASE_URL) {
-      console.error("DATABASE_URL is not configured.");
-      return NextResponse.json(
-        { success: false, message: "Database configuration error." },
-        { status: 500 }
-      );
-    }
-
-    const sql = neon(process.env.DATABASE_URL);
 
     // We assume the users have created a 'subscribers' table with a UNIQUE 'email' column.
     // ON CONFLICT prevents an error if the email is already in the database.

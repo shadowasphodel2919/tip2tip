@@ -2,6 +2,7 @@ import { fetchLatestVideo } from "@/lib/rss";
 import Countdown from "@/components/Countdown";
 import VideoCard from "@/components/VideoCard";
 import EmailSignup from "@/components/EmailSignup";
+import CommunitySection from "@/components/CommunitySection";
 import MapWrapper from "@/components/MapWrapper";
 export const revalidate = 300; // Revalidate page every 5 minutes
 
@@ -56,6 +57,12 @@ export default async function Home() {
           />
         </section>
       )}
+
+      {/* Divider */}
+      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)] mt-12 md:mt-16" />
+
+      {/* Community Section */}
+      <CommunitySection />
 
       {/* Divider */}
       <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
