@@ -11,6 +11,13 @@ export default function SupportWall({ messages }: SupportWallProps) {
   const [loading, setLoading] = useState(false);
   const [successStatus, setSuccessStatus] = useState<string | null>(null);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  const visibleMessages = messages.slice(0, visibleCount);
+
+  const handleSeeMore = () => {
+    setVisibleCount((prev) => prev + 10);
+  };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -107,7 +114,7 @@ export default function SupportWall({ messages }: SupportWallProps) {
 
       {/* Messages Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {messages.map((msg) => (
+        {visibleMessages.map((msg) => (
           <div key={msg.id} className="bg-white/5 border border-white/10 rounded-xl p-6 break-words relative overflow-hidden group hover:border-white/20 transition-colors">
             <div className="flex justify-between items-start mb-4">
               <span className="font-semibold text-[var(--text-primary)]">{msg.name}</span>
@@ -125,6 +132,17 @@ export default function SupportWall({ messages }: SupportWallProps) {
           </div>
         )}
       </div>
+
+      {visibleCount < messages.length && (
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={handleSeeMore}
+            className="px-6 py-2 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-sm text-[var(--text-primary)]"
+          >
+            See More Notes 👇
+          </button>
+        </div>
+      )}
     </div>
   );
 }

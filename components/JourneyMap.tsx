@@ -66,7 +66,7 @@ export default function JourneyMap() {
       <MapContainer
         center={[32, 112]}
         zoom={4.25}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         className="w-full h-full"
       >
         <TileLayer

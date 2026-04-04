@@ -4,6 +4,8 @@ import VideoCard from "@/components/VideoCard";
 import EmailSignup from "@/components/EmailSignup";
 import CommunitySection from "@/components/CommunitySection";
 import MapWrapper from "@/components/MapWrapper";
+import KomootMap from "@/components/KomootMap";
+
 export const revalidate = 300; // Revalidate page every 5 minutes
 
 export default async function Home() {
@@ -67,6 +69,12 @@ export default async function Home() {
       {/* Divider */}
       <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
 
+      {/* Komoot Live Path */}
+      <KomootMap />
+
+      {/* Divider */}
+      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
+
       {/* Email Signup */}
       <section className="px-4 py-12 md:py-16">
         <EmailSignup />
@@ -79,7 +87,7 @@ export default async function Home() {
         </p>
         <p className="text-xs text-[var(--border-subtle)] mt-1">
           <a href="https://x.com/TheTahaJamal" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--text-muted)] transition-colors">
-            Made By Taha
+            Made By Taha(Drop a follow?)
           </a>
         </p>
       </footer>
