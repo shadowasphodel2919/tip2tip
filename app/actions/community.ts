@@ -28,7 +28,7 @@ export async function submitSupportMessage(formData: FormData) {
   try {
     await sql`
       INSERT INTO support_messages (name, message, approved)
-      VALUES (${name}, ${message}, true)
+      VALUES (${name}, ${message}, false)
     `;
     return { success: true, message: "Your note's on the wall 💛" };
   } catch (error) {
