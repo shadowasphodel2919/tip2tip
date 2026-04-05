@@ -5,6 +5,7 @@ import EmailSignup from "@/components/EmailSignup";
 import CommunitySection from "@/components/CommunitySection";
 import MapWrapper from "@/components/MapWrapper";
 import KomootMap from "@/components/KomootMap";
+import CiggyRush from "@/components/CiggyRush";
 
 export const revalidate = 300; // Revalidate page every 5 minutes
 
@@ -79,6 +80,9 @@ export default async function Home() {
       <section className="px-4 py-12 md:py-16">
         <EmailSignup />
       </section>
+
+      {/* Ciggy Rush Game */}
+      <CiggyRush />
 
       {/* Footer */}
       <footer className="pb-8 text-center px-4">
