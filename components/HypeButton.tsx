@@ -7,27 +7,72 @@ interface HypeButtonProps {
   initialCount: number;
 }
 
+interface HypeData {
+  count: number;
+  lastHypedAt: number;
+}
+
 export default function HypeButton({ initialCount }: HypeButtonProps) {
   const [count, setCount] = useState(initialCount);
-  const [isHyped, setIsHyped] = useState(false);
+  const [hypeData, setHypeData] = useState<HypeData>({ count: 0, lastHypedAt: 0 });
   const [loading, setLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    // Check if the user has already hyped Cam in this session/browser
-    const hasHyped = localStorage.getItem("cam_hyped");
-    if (hasHyped) {
-      setIsHyped(true);
+    const rawData = localStorage.getItem("cam_hyped_data");
+    if (rawData) {
+      try {
+        const parsed = JSON.parse(rawData);
+        setHypeData(parsed);
+      } catch (e) {
+        // Fallback or old data
+      }
+    } else {
+      // Migrate old "cam_hyped" string if exists
+      const oldVal = localStorage.getItem("cam_hyped");
+      if (oldVal === "true") {
+        const migrated = { count: 1, lastHypedAt: Date.now() - 60000 };
+        setHypeData(migrated);
+        localStorage.setItem("cam_hyped_data", JSON.stringify(migrated));
+        localStorage.removeItem("cam_hyped");
+      }
     }
   }, []);
 
+  useEffect(() => {
+    // Timer to calculate lock state
+    const checkTimer = () => {
+      const now = Date.now();
+      const diff = now - hypeData.lastHypedAt;
+      if (diff < 60000 && hypeData.count > 0 && hypeData.count < 5) {
+        setTimeLeft(Math.ceil((60000 - diff) / 1000));
+      } else {
+        setTimeLeft(0);
+      }
+    };
+
+    checkTimer();
+    const interval = setInterval(checkTimer, 1000);
+    return () => clearInterval(interval);
+  }, [hypeData.lastHypedAt, hypeData.count]);
+
+  const isMaxedOut = hypeData.count >= 5;
+  const isLocked = timeLeft > 0 || isMaxedOut;
+
   const handleHype = async () => {
-    if (isHyped || loading) return;
+    if (isLocked || loading) return;
 
     setLoading(true);
+    
+    const newData = {
+      count: hypeData.count + 1,
+      lastHypedAt: Date.now(),
+    };
+
     // Optimistic UI update
     setCount((prev) => prev + 1);
-    setIsHyped(true);
-    localStorage.setItem("cam_hyped", "true");
+    setHypeData(newData);
+    localStorage.setItem("cam_hyped_data", JSON.stringify(newData));
 
     const result = await incrementHype();
     if (result && result.success) {
@@ -35,24 +80,31 @@ export default function HypeButton({ initialCount }: HypeButtonProps) {
     } else {
       // Revert if failed
       setCount((prev) => prev - 1);
-      setIsHyped(false);
-      localStorage.removeItem("cam_hyped");
+      setHypeData(hypeData);
+      localStorage.setItem("cam_hyped_data", JSON.stringify(hypeData));
     }
     setLoading(false);
+  };
+
+  const getButtonText = () => {
+    if (isMaxedOut) return "Maxed 💛";
+    if (timeLeft > 0) return `Wait ${timeLeft}s`;
+    if (hypeData.count > 0) return "Hype Again ⚡";
+    return "Hype Cam ⚡";
   };
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-3 bg-black/60 backdrop-blur-md border border-white/10 px-1 py-1 pr-4 rounded-full shadow-lg">
       <button
         onClick={handleHype}
-        disabled={isHyped || loading}
+        disabled={isLocked || loading}
         className={`flex items-center justify-center h-10 px-4 rounded-full font-medium transition-all duration-300 text-sm ${
-          isHyped
+          isLocked
             ? "bg-white/10 text-[var(--text-muted)] cursor-not-allowed"
             : "bg-[#ef4444] text-white hover:bg-[#dc2626] hover:scale-105 active:scale-95 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
         }`}
       >
-        {isHyped ? "Hyped 💛" : "Hype Cam ⚡"}
+        {getButtonText()}
       </button>
 
       <div className="flex flex-col text-left">
