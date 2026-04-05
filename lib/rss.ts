@@ -59,6 +59,11 @@ export async function fetchLatestVideo(): Promise<LatestVideoResponse> {
     const videoId = videoIdMatch ? videoIdMatch[1] : "";
 
     if (!videoId) continue;
+    
+    // Ignore livestreams based on title heuristic
+    if (title.toUpperCase().includes("LIVE")) {
+      continue;
+    }
 
     const isVideoShort = await isShort(videoId);
     if (isVideoShort) continue; // Skip shorts!
