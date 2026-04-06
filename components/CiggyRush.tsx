@@ -164,11 +164,12 @@ export default function CiggyRush() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (gameState !== "PLAYING") return;
+
       // Prevent default scrolling for arrow keys
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
         e.preventDefault();
       }
-      if (gameState !== "PLAYING") return;
 
       const currentDir = directionRef.current;
       switch (e.key.toLowerCase()) {
