@@ -89,9 +89,9 @@ export default async function Home() {
         <p className="text-[var(--text-muted)] text-[15px] leading-relaxed mb-6">
           I'm thinking of making a wall of fan art or pictures. If anyone wants to submit their art, tweet it and tag me and I'll be sure to add it.
         </p>
-        <a 
-          href="https://x.com/thetahajamal" 
-          target="_blank" 
+        <a
+          href="https://x.com/thetahajamal"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center gap-2 bg-[#ef4444] text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-sm"
         >
@@ -103,15 +103,19 @@ export default async function Home() {
       <CiggyRush />
 
       {/* Footer */}
-      <footer className="pb-8 text-center px-4">
-        <p className="text-xs text-[var(--text-muted)]">
+      <footer className="pb-4 text-center px-4 mt-4">
+        <p className="text-sm font-medium text-[var(--text-secondary)] mb-2">
           Let's not harass Cam.
         </p>
-        <p className="text-xs text-[var(--border-subtle)] mt-1">
-          <a href="https://x.com/TheTahaJamal" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--text-muted)] transition-colors">
-            Made By Taha(Drop a follow?)
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-xs opacity-70 hover:opacity-100 transition-opacity">
+          <a href="https://x.com/TheTahaJamal" target="_blank" rel="noopener noreferrer" className="text-[var(--text-muted)] hover:text-white transition-colors">
+            Made By Taha
           </a>
-        </p>
+          <span className="hidden sm:inline text-[var(--border-subtle)]">•</span>
+          <a href="https://ko-fi.com/Y8Y01X7TID" target="_blank" rel="noopener noreferrer" className="text-[#ff5e5b] hover:text-[#ff7b78] transition-colors flex items-center gap-1">
+            Support on Ko-fi ☕
+          </a>
+        </div>
       </footer>
     </main>
   );
