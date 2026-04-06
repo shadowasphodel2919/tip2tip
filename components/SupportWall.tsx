@@ -12,6 +12,7 @@ export default function SupportWall({ messages }: SupportWallProps) {
   const [successStatus, setSuccessStatus] = useState<string | null>(null);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(10);
+  const [messageText, setMessageText] = useState("");
 
   const visibleMessages = messages.slice(0, visibleCount);
 
@@ -21,6 +22,8 @@ export default function SupportWall({ messages }: SupportWallProps) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (messageText.trim().length === 0) return;
+
     setLoading(true);
     setErrorStatus(null);
     setSuccessStatus(null);
@@ -33,6 +36,7 @@ export default function SupportWall({ messages }: SupportWallProps) {
     if (result.success) {
       setSuccessStatus(result.message);
       (event.target as HTMLFormElement).reset();
+      setMessageText("");
     } else {
       setErrorStatus(result.message);
     }
@@ -92,9 +96,17 @@ export default function SupportWall({ messages }: SupportWallProps) {
                 required
                 maxLength={500}
                 rows={3}
+                value={messageText}
+                onChange={(e) => {
+                  setMessageText(e.target.value);
+                  if (errorStatus) setErrorStatus(null);
+                }}
                 className="w-full bg-[var(--bg-card)] border border-[var(--border-muted)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-muted)] transition-colors resize-none placeholder:text-white/20"
                 placeholder="You guys are killing it..."
               ></textarea>
+              {messageText.length > 0 && messageText.trim().length === 0 && (
+                <p className="text-xs text-[#ef4444] mt-1.5 animate-fade-in">Empty message cannot be submitted.</p>
+              )}
             </div>
 
             {errorStatus && (
@@ -103,7 +115,7 @@ export default function SupportWall({ messages }: SupportWallProps) {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || messageText.trim().length === 0}
               className="mt-2 bg-white text-black font-medium px-6 py-3 rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Drop Message"}
