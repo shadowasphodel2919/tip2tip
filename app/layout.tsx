@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import FanArtModal from "@/components/FanArtModal";
 
 export const metadata: Metadata = {
   title: "Editor Cam Watch",
@@ -34,7 +33,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         {children}
-        <FanArtModal />
         <Analytics />
       </body>
     </html>
