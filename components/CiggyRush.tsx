@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import confetti from "canvas-confetti";
 import { saveGameScore, getTopScores, LeaderboardEntry } from "@/app/actions/game";
 
 type GameState = "IDLE" | "PLAYING" | "LIFE_LOST" | "GAME_OVER";
@@ -21,6 +22,7 @@ export default function CiggyRush() {
   const [lives, setLives] = useState(3);
   const [score, setScore] = useState(0);
   const [topScores, setTopScores] = useState<LeaderboardEntry[]>([]);
+  const [isHighScore, setIsHighScore] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const snakeRef = useRef<Point[]>(INITIAL_SNAKE);
@@ -61,9 +63,41 @@ export default function CiggyRush() {
 
   const handleGameOver = useCallback(async (finalScore: number) => {
     setGameState("GAME_OVER");
+
+    const isTop5 = topScores.length < 5 || (topScores.length > 0 && finalScore > topScores[topScores.length - 1].score);
+    if (finalScore > 0 && isTop5) {
+      setIsHighScore(true);
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const frame = () => {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#ef4444', '#facc15', '#ffffff']
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#ef4444', '#facc15', '#ffffff']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      };
+      frame();
+    } else {
+      setIsHighScore(false);
+    }
+
     await saveGameScore(playerName, finalScore);
     await fetchScores();
-  }, [playerName]);
+  }, [playerName, topScores]);
 
   useEffect(() => {
     if (gameState !== "PLAYING") return;
@@ -226,6 +260,7 @@ export default function CiggyRush() {
     if (!playerName.trim()) setPlayerName("PLAYER");
     setScore(0);
     setLives(3);
+    setIsHighScore(false);
     resetSnake();
     setGameState("PLAYING");
   };
@@ -301,7 +336,12 @@ export default function CiggyRush() {
             {gameState === "GAME_OVER" && (
               <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center p-6 backdrop-blur-md z-10">
                 <h3 className="text-[#ef4444] text-2xl font-black mb-2 tracking-widest">GAME OVER</h3>
-                <p className="text-white text-sm mb-8 tracking-widest">SCORE: <span className="text-[#facc15] font-bold">{score}</span></p>
+                <p className="text-white text-sm mb-4 tracking-widest">SCORE: <span className="text-[#facc15] font-bold">{score}</span></p>
+                {isHighScore && (
+                  <div className="text-[#facc15] text-center mb-6 animate-pulse">
+                    <p className="text-xs uppercase tracking-widest font-bold">New High Score!</p>
+                  </div>
+                )}
                 <button
                   onClick={startGame}
                   className="border-2 border-white/20 text-white px-6 py-2 rounded-full uppercase tracking-widest hover:bg-white/10 transition-colors text-sm font-bold"
