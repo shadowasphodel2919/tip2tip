@@ -53,6 +53,22 @@ export async function getApprovedMessages(): Promise<SupportMessage[]> {
   }
 }
 
+export async function getTopComments(): Promise<SupportMessage[]> {
+  try {
+    const messages = await sql`
+      SELECT id, name, message, created_at
+      FROM support_messages
+      WHERE supportive_nature IS NOT NULL
+      ORDER BY supportive_nature DESC
+      LIMIT 100
+    `;
+    return messages as SupportMessage[];
+  } catch (error) {
+    console.error("Failed to fetch top comments:", error);
+    return [];
+  }
+}
+
 export async function incrementHype() {
   try {
     const result = await sql`
