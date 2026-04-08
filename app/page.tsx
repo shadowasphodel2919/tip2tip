@@ -2,6 +2,7 @@ import VideoCard from "@/components/VideoCard";
 import CommunitySection from "@/components/CommunitySection";
 import KomootMap from "@/components/KomootMap";
 import CiggyRush from "@/components/CiggyRush";
+import DragonCursor from "@/components/DragonCursor";
 
 const videos = [
   { day: "Day 16", id: "QmhskSqnWa8", url: "https://www.youtube.com/watch?v=QmhskSqnWa8" },
@@ -24,8 +25,14 @@ const videos = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-screen flex flex-col relative overflow-hidden">
+      <DragonCursor />
 
+      {/* Pure Black Background */}
+      <div className="absolute inset-0 pointer-events-none -z-20 bg-black" />
+
+      {/* Main content wrapper */}
+      <div className="flex-1 flex flex-col z-10 relative">
 
       {/* Header / Hero */}
       <header className="pt-16 pb-12 text-center px-4 relative z-10">
@@ -145,6 +152,7 @@ export default function Home() {
           </a>
         </div>
       </footer>
+      </div>
     </main>
   );
 }

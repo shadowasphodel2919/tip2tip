@@ -266,11 +266,11 @@ export default function CiggyRush() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto pb-12 mb-12 px-4 font-mono select-none">
-      <div className="text-center mb-8 border-t border-[var(--border-muted)] pt-12 md:pt-24 mt-12 md:mt-16">
+    <div className="w-full max-w-5xl mx-auto pb-12 mb-12 px-4 font-mono select-none relative z-10">
+      <div className="text-center mb-8 border-t border-[var(--border-muted)] pt-12 md:pt-16 mt-4">
         <p className="text-xs text-[var(--text-secondary)] uppercase tracking-[0.3em] mb-2">TIRED OF WAITING?</p>
-        <h2 className="text-3xl font-black tracking-tight text-[#ef4444] mb-1">CIGGY RUSH</h2>
-        <p className="text-xs text-[var(--text-muted)] mt-1 tracking-widest">COLLECT ALL CIGGIES</p>
+        <h2 className="text-3xl font-black tracking-tight text-[var(--text-secondary)] mb-1">CIGGY RUSH</h2>
+        <p className="text-xs text-[var(--text-primary)] mt-1 tracking-widest">COLLECT ALL CIGGIES</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 justify-center items-center md:items-start max-w-3xl mx-auto">
