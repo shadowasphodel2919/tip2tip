@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { incrementHype } from "@/app/actions/community";
+// Trip is over — hype can no longer be incremented, kept for future reuse
+// import { incrementHype } from "@/app/actions/community";
 
 interface HypeButtonProps {
   initialCount: number;
@@ -57,9 +58,14 @@ export default function HypeButton({ initialCount }: HypeButtonProps) {
   }, [hypeData.lastHypedAt, hypeData.count]);
 
   const isMaxedOut = hypeData.count >= 5;
-  const isLocked = timeLeft > 0 || isMaxedOut;
+  // Trip is over — hype button is permanently locked
+  const isLocked = true;
 
   const handleHype = async () => {
+    // Trip is over — hype incrementing is disabled
+    return;
+
+    /* Kept for future reuse:
     if (isLocked || loading) return;
 
     setLoading(true);
@@ -84,13 +90,18 @@ export default function HypeButton({ initialCount }: HypeButtonProps) {
       localStorage.setItem("cam_hyped_data", JSON.stringify(hypeData));
     }
     setLoading(false);
+    */
   };
 
   const getButtonText = () => {
+    // Trip is over — always show locked state
+    return "Trip's Over 🏁";
+    /* Kept for future reuse:
     if (isMaxedOut) return "Maxed 💛";
     if (timeLeft > 0) return `Wait ${timeLeft}s`;
     if (hypeData.count > 0) return "Hype Again ⚡";
     return "Hype Cam ⚡";
+    */
   };
 
   return (
