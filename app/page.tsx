@@ -53,12 +53,47 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Community Section */}
+      <CommunitySection />
+
+      {/* Divider */}
+      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
+
+      {/* Komoot Live Path */}
+      <KomootMap />
+
+      {/* Divider */}
+      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
+
+      {/* Fan Art Promo */}
+      <section className="px-4 py-10 md:py-12 max-w-2xl mx-auto text-center border border-white/5 rounded-2xl bg-white/5 mb-4 shadow-lg">
+        <h3 className="text-[var(--text-primary)] font-bold text-lg tracking-wide flex items-center justify-center gap-2 mb-4">
+          Fan Art Wall? <span className="text-xl">🎨</span>
+        </h3>
+        <p className="text-[var(--text-muted)] text-[15px] leading-relaxed mb-6">
+          I'm thinking of making a wall of fan art or pictures. If anyone wants to submit their art, tweet it and tag me and I'll be sure to add it.
+        </p>
+        <a
+          href="https://x.com/thetahajamal"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 bg-[#ef4444] text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-sm"
+        >
+          Tweet & Tag Me
+        </a>
+      </section>
+
+      {/* Ciggy Rush Game */}
+      <CiggyRush />
+
+      {/* Divider */}
+      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)] mt-4 md:mt-8" />
+
       {/* Videos Section */}
       <section className="px-4 py-8 max-w-7xl mx-auto w-full relative z-10">
         <h2 className="text-xl md:text-2xl font-bold text-center text-[var(--text-primary)] mb-10 tracking-widest uppercase">
           The Journey
         </h2>
-        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {videos.map((vid) => (
             <a
@@ -86,7 +121,6 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
                 {/* Info */}
                 <div className="p-4 flex-1">
                   <h3 className="font-bold text-[var(--text-primary)] text-lg mb-1 group-hover:text-[#ef4444] transition-colors">
@@ -98,44 +132,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Divider */}
-      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)] mt-12 md:mt-16" />
-
-      {/* Community Section */}
-      <CommunitySection />
-
-      {/* Divider */}
-      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
-
-      {/* Komoot Live Path */}
-      <KomootMap />
-
-      {/* Divider */}
-      <div className="max-w-xs mx-auto w-full border-t border-[var(--border-muted)]" />
-
-
-
-      {/* Fan Art Promo */}
-      <section className="px-4 py-10 md:py-12 max-w-2xl mx-auto text-center border border-white/5 rounded-2xl bg-white/5 mb-4 shadow-lg">
-        <h3 className="text-[var(--text-primary)] font-bold text-lg tracking-wide flex items-center justify-center gap-2 mb-4">
-          Fan Art Wall? <span className="text-xl">🎨</span>
-        </h3>
-        <p className="text-[var(--text-muted)] text-[15px] leading-relaxed mb-6">
-          I'm thinking of making a wall of fan art or pictures. If anyone wants to submit their art, tweet it and tag me and I'll be sure to add it.
-        </p>
-        <a
-          href="https://x.com/thetahajamal"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 bg-[#ef4444] text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-sm"
-        >
-          Tweet & Tag Me
-        </a>
-      </section>
-
-      {/* Ciggy Rush Game */}
-      <CiggyRush />
 
       {/* Footer */}
       <footer className="pb-4 text-center px-4 mt-4">

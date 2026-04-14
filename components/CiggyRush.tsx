@@ -64,8 +64,9 @@ export default function CiggyRush() {
   const handleGameOver = useCallback(async (finalScore: number) => {
     setGameState("GAME_OVER");
 
-    const isTop5 = topScores.length < 5 || (topScores.length > 0 && finalScore > topScores[topScores.length - 1].score);
-    if (finalScore > 0 && isTop5) {
+    // Leaderboard is frozen — high score celebration triggers locally at > 75
+    // (no longer depends on live DB rankings)
+    if (finalScore > 75) {
       setIsHighScore(true);
       const duration = 3000;
       const end = Date.now() + duration;
@@ -97,6 +98,7 @@ export default function CiggyRush() {
 
     await saveGameScore(playerName, finalScore);
     await fetchScores();
+
   }, [playerName, topScores]);
 
   useEffect(() => {

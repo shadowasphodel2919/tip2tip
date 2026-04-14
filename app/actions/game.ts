@@ -11,6 +11,10 @@ export type LeaderboardEntry = {
 };
 
 export async function saveGameScore(name: string, score: number) {
+  // Leaderboard is frozen — no new entries are written to the DB.
+  // Game still runs and high score UI still triggers on the client.
+  // Kept for future reuse:
+  /*
   try {
     const cleanName = name.trim().toUpperCase().slice(0, 10) || "PLAYER";
 
@@ -36,7 +40,10 @@ export async function saveGameScore(name: string, score: number) {
     console.error("Failed to save score:", error);
     return { success: false };
   }
+  */
+  return { success: true };
 }
+
 
 export async function getTopScores(): Promise<LeaderboardEntry[]> {
   try {

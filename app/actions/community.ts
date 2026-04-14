@@ -11,6 +11,9 @@ export type SupportMessage = {
 };
 
 export async function submitSupportMessage(formData: FormData) {
+  // Trip is over — new messages are no longer accepted. Endpoint frozen.
+  // Kept for future reuse:
+  /*
   const name = (formData.get("name") as string)?.trim() || "Anonymous";
   const message = (formData.get("message") as string)?.trim();
 
@@ -35,6 +38,8 @@ export async function submitSupportMessage(formData: FormData) {
     console.error("Failed to submit message:", error);
     return { success: false, message: "Something went wrong. Try again." };
   }
+  */
+  return { success: false, message: "Comments are closed." };
 }
 
 export async function getApprovedMessages(): Promise<SupportMessage[]> {
@@ -70,6 +75,9 @@ export async function getTopComments(): Promise<SupportMessage[]> {
 }
 
 export async function incrementHype() {
+  // Trip is over — hype count is frozen at 2834. Endpoint frozen.
+  // Kept for future reuse:
+  /*
   try {
     const result = await sql`
       UPDATE hype_stats
@@ -87,7 +95,10 @@ export async function incrementHype() {
     console.error("Failed to increment hype:", error);
     return { success: false, count: 0 };
   }
+  */
+  return { success: false, count: 2834 };
 }
+
 
 export async function getHypeCount(): Promise<number> {
   try {
