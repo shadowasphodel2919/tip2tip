@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-// Trip is over — submission action is no longer called, kept for future reuse
-// import { submitSupportMessage } from "@/app/actions/community";
-import { SupportMessage } from "@/app/actions/community";
+import { submitSupportMessage, SupportMessage } from "@/app/actions/community";
 
 interface SupportWallProps {
   recentMessages: SupportMessage[];
@@ -11,8 +9,12 @@ interface SupportWallProps {
 }
 
 export default function SupportWall({ recentMessages, topMessages }: SupportWallProps) {
+  const [loading, setLoading] = useState(false);
+  const [successStatus, setSuccessStatus] = useState<string | null>(null);
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [visibleRecentCount, setVisibleRecentCount] = useState(10);
   const [visibleTopCount, setVisibleTopCount] = useState(10);
+  const [messageText, setMessageText] = useState("");
 
   const visibleRecentMessages = recentMessages.slice(0, visibleRecentCount);
   const visibleTopMessages = topMessages.slice(0, visibleTopCount);
@@ -25,6 +27,29 @@ export default function SupportWall({ recentMessages, topMessages }: SupportWall
     setVisibleTopCount((prev) => prev + 10);
   };
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (messageText.trim().length === 0) return;
+
+    setLoading(true);
+    setErrorStatus(null);
+    setSuccessStatus(null);
+
+    const formData = new FormData(event.currentTarget);
+    
+    const result = await submitSupportMessage(formData);
+    
+    if (result.success) {
+      setSuccessStatus(result.message);
+      (event.target as HTMLFormElement).reset();
+      setMessageText("");
+    } else {
+      setErrorStatus(result.message);
+    }
+    
+    setLoading(false);
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto mt-12 mb-12">
       <div className="text-center mb-8">
@@ -36,53 +61,81 @@ export default function SupportWall({ recentMessages, topMessages }: SupportWall
         </p>
       </div>
 
-      {/* Submission Form — Trip is over, new comments are closed */}
-      <div className="bg-[#111] border border-white/10 rounded-2xl p-6 md:p-8 mb-16 shadow-lg max-w-2xl mx-auto opacity-60">
+      {/* Submission Form */}
+      <div className="bg-[#111] border border-white/10 rounded-2xl p-6 md:p-8 mb-16 shadow-lg max-w-2xl mx-auto">
         <div className="text-center mb-5">
           <span className="inline-block bg-white/10 text-[var(--text-muted)] text-xs uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/10 mb-3">
-            🏁 Trip Complete — Comments Closed
+            📝 Comments Open
           </span>
-          <p className="text-xs text-[var(--text-secondary)]">
-            The trip has ended. New messages are no longer being accepted.
+          <p className="text-xs text-[#facc15]">
+            Note: New messages will not reach Top Comments as the trip is over.
           </p>
         </div>
-        <form className="flex flex-col gap-5" onSubmit={(e) => e.preventDefault()}>
-          <div className="flex flex-col md:flex-row gap-5">
-            <div className="flex-1">
-              <label htmlFor="name" className="block text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
-                Name <span className="opacity-50">(optional)</span>
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                disabled
-                className="w-full bg-[var(--bg-card)] border border-[var(--border-muted)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-primary)] cursor-not-allowed opacity-50 placeholder:text-white/20"
-                placeholder="Anonymous"
-              />
+        {successStatus ? (
+          <div className="text-center py-8 animate-fade-in">
+            <p className="text-xl text-[#facc15] font-medium mb-2">{successStatus}</p>
+            <p className="text-[var(--text-muted)] text-sm mb-6">Your message has been received.</p>
+            <button 
+              onClick={() => setSuccessStatus(null)}
+              className="text-xs text-[var(--text-secondary)] uppercase tracking-wider hover:text-white transition-colors border border-[var(--border-muted)] px-4 py-2 rounded-full"
+            >
+              Write another note
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="flex flex-col md:flex-row gap-5">
+              <div className="flex-1">
+                <label htmlFor="name" className="block text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
+                  Name <span className="opacity-50">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  maxLength={100}
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border-muted)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-white/20"
+                  placeholder="Anonymous"
+                />
+              </div>
             </div>
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
-              Message *
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              disabled
-              rows={3}
-              className="w-full bg-[var(--bg-card)] border border-[var(--border-muted)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-primary)] resize-none cursor-not-allowed opacity-50 placeholder:text-white/20"
-              placeholder="Comments are now closed..."
-            />
-          </div>
-          <button
-            type="button"
-            disabled
-            className="mt-2 bg-white/10 text-[var(--text-muted)] font-medium px-6 py-3 rounded-lg cursor-not-allowed opacity-50"
-          >
-            Comments Closed
-          </button>
-        </form>
+
+            <div>
+              <label htmlFor="message" className="block text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
+                Message *
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                maxLength={500}
+                rows={3}
+                value={messageText}
+                onChange={(e) => {
+                  setMessageText(e.target.value);
+                  if (errorStatus) setErrorStatus(null);
+                }}
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-muted)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-muted)] transition-colors resize-none placeholder:text-white/20"
+                placeholder="You guys are killing it..."
+              ></textarea>
+              {messageText.length > 0 && messageText.trim().length === 0 && (
+                <p className="text-xs text-[#ef4444] mt-1.5 animate-fade-in">Empty message cannot be submitted.</p>
+              )}
+            </div>
+
+            {errorStatus && (
+              <p className="text-sm text-[#ef4444] animate-fade-in">{errorStatus}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || messageText.trim().length === 0}
+              className="mt-2 bg-white text-black font-medium px-6 py-3 rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Sending..." : "Drop Message"}
+            </button>
+          </form>
+        )}
       </div>
 
       {/* Top Comments Section */}

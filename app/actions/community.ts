@@ -11,9 +11,6 @@ export type SupportMessage = {
 };
 
 export async function submitSupportMessage(formData: FormData) {
-  // Trip is over — new messages are no longer accepted. Endpoint frozen.
-  // Kept for future reuse:
-  /*
   const name = (formData.get("name") as string)?.trim() || "Anonymous";
   const message = (formData.get("message") as string)?.trim();
 
@@ -38,9 +35,8 @@ export async function submitSupportMessage(formData: FormData) {
     console.error("Failed to submit message:", error);
     return { success: false, message: "Something went wrong. Try again." };
   }
-  */
-  return { success: false, message: "Comments are closed." };
 }
+
 
 export async function getApprovedMessages(): Promise<SupportMessage[]> {
   try {
